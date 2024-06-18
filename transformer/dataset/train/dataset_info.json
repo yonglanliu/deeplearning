@@ -1,0 +1,38 @@
+{
+  "builder_name": "text",
+  "citation": "",
+  "config_name": "dataset",
+  "dataset_name": "20k-en-zh-translation-pinyin-hsk",
+  "dataset_size": 5225044,
+  "description": "",
+  "download_checksums": {
+    "hf://datasets/swaption2009/20k-en-zh-translation-pinyin-hsk@83ae38cb544e836c9ff84a4666c17432b8b0d6f1/hsk_1_4.txt": {
+      "num_bytes": 4889584,
+      "checksum": null
+    }
+  },
+  "download_size": 4889584,
+  "features": {
+    "text": {
+      "dtype": "string",
+      "_type": "Value"
+    }
+  },
+  "homepage": "",
+  "license": "",
+  "size_in_bytes": 10114628,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 5225044,
+      "num_examples": 111820,
+      "dataset_name": "20k-en-zh-translation-pinyin-hsk"
+    }
+  },
+  "version": {
+    "version_str": "0.0.0",
+    "major": 0,
+    "minor": 0,
+    "patch": 0
+  }
+}
