@@ -63,12 +63,16 @@ class Decoder(nn.Module):
     def forward(self, x, x_valid_lens, y):
         y = self._embedding(y) * math.sqrt(self._num_hiddens)
         y = y + self._pos_encoding()
-        #print(y.shape)
-        for _decoderLayer in self._decoderLayers:
+        self._attention_weights = [[None] * len(self._decoderLayers) for _ in range(2)]
+        for i, _decoderLayer in enumerate(self._decoderLayers):
             y = _decoderLayer(x, x_valid_lens, y)
+            self._attention_weights[0][i] = _decoderLayer._SelfAttention.attention.attention_weights
+            self._attention_weights[1][i] = _decoderLayer._CrossAttention.attention.attention_weights
         return y
 
-
+    def attention_weights(self):
+        return self._attention_weights
+    
 if __name__ == "__main__":
 
     num_hiddens= 512

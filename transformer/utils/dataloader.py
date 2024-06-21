@@ -1,4 +1,5 @@
 import sys
+import torch
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 import numpy as np
@@ -17,24 +18,34 @@ class Textdataset(Dataset):
         return self.english_sentences[idx], self.chinese_sentences[idx]
     
     
-def batch_loader(DATA_PATH="transformer/dataset/dataset.npy", BATCH_SIZE=16):
+def batch_loader(data, BATCH_SIZE=16, split_ratio=0.8):
 
-    combined_sentences = np.load(DATA_PATH)
-    english_sentences = combined_sentences[:, 0]
-    chinese_sentences = combined_sentences[:, 1]
+    english_sentences = data[:, 0]
+    chinese_sentences = data[:, 1]
 
     dataset = Textdataset(english_sentences, chinese_sentences)
-    train_loader = DataLoader(dataset, BATCH_SIZE)
-    return train_loader
+
+    # Split dataset into traning set and validation set
+    train_size = int(split_ratio * len(dataset))
+    test_size = len(dataset) - train_size
+    train_set, val_set = torch.utils.data.random_split(dataset, [train_size, test_size])
+    print(f'Training set size: {len(train_set)}\nValidation set size: {len(val_set)}')
+
+    train_loader = DataLoader(train_set, BATCH_SIZE, shuffle=True)
+    val_loader = DataLoader(val_set, BATCH_SIZE)
+
+    return train_loader, val_loader
 
 
 if __name__ == "__main__":
     from transformer.module.encoder import Encoder 
     from transformer.module.decoder import Decoder
+    DATA_PATH="./dataset/dataset.npy"
+    combined_sentences = np.load(DATA_PATH)
     BATCH_SIZE = 16
 
-    dataloader = batch_loader(BATCH_SIZE=16)
-    iterator = iter(dataloader)
+    train_loader, test_loader = batch_loader(combined_sentences, BATCH_SIZE=BATCH_SIZE)
+    iterator = iter(train_loader)
     for batch_num, batch in enumerate(iterator):
         #print(batch)
         if batch_num > 3:

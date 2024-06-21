@@ -27,14 +27,20 @@ class Transformer(nn.Module):
         out = self._linear(out)
         return out
     
+    def configure_optimizers(self):
+        return torch.optim.SGD(self.model.parameters(), lr=0.1)
 
+    def configure_loss(self):
+        return nn.functional.nll_loss(ignore_index=0, reduction="none")
+    
+    
 if __name__ == "__main__":
     from ..utils.dataloader import batch_loader
     from ..utils.tokenizer import en_vocab_size, cn_vocab_size, batch_tokenize
     BATCH_SIZE = 16
 
-    dataloader = batch_loader(BATCH_SIZE=16)
-    iterator = iter(dataloader)
+    train_loader, test_loader = batch_loader(BATCH_SIZE=16)
+    iterator = iter(train_loader)
     for batch_num, batch in enumerate(iterator):
         #print(batch)
         if batch_num > 3:
